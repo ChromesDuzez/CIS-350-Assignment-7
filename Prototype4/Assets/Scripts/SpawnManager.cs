@@ -1,4 +1,10 @@
-﻿using System.Collections;
+﻿/* 
+ * Zach Wilson
+ * Assignment 7
+ * This script manages the spawning of the enemies and the powerups throughout the game
+*/
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,30 +19,24 @@ public class SpawnManager : MonoBehaviour
 
     //waveManager variables
     public int enemyCount;
-    public int waveNumber = 1;
+    public static int waveNumber;
 
     // Start is called before the first frame update
     void Start()
     {
-        SpawnEnemyWave(waveNumber);
-        SpawnPowerup(1);
+        waveNumber = 1;
+        SpawnPrefab(enemyPrefab, waveNumber);
+        SpawnPrefab(powerupPrefab, 1);
     }
 
-    private void SpawnEnemyWave(int enemiesToSpawn)
+    private void SpawnPrefab(GameObject prefab, int numToSpawn = 1, Quaternion rotation = new Quaternion())
     {
-        for (int i = 0; i < enemiesToSpawn; i++)
-        {
-            //instantiate the enemy in the random position
-            Instantiate(enemyPrefab, GenerateSpawnPosition(), enemyPrefab.transform.rotation);
-        }
-    }
+        if (rotation == new Quaternion()) { rotation = prefab.transform.rotation; }
 
-    private void SpawnPowerup(int powerupsToSpawn)
-    {
-        for (int i = 0; i < powerupsToSpawn; i++)
+        for (int i = 0; i < numToSpawn; i++)
         {
             //instantiate the enemy in the random position
-            Instantiate(powerupPrefab, GenerateSpawnPosition(), powerupPrefab.transform.rotation);
+            Instantiate(prefab, GenerateSpawnPosition(), rotation);
         }
     }
 
@@ -53,11 +53,16 @@ public class SpawnManager : MonoBehaviour
     {
         enemyCount = GameObject.FindGameObjectsWithTag("Enemy").Length;
 
-        if(enemyCount == 0)
+        if(enemyCount == 0 && !GameManager.gameOver)
         {
             waveNumber++;
-            SpawnEnemyWave(waveNumber);
-            SpawnPowerup(1);
+            if(waveNumber > 10)
+            {
+                GameManager.gameOver = true;
+                GameManager.winCondition = true;
+            }
+            SpawnPrefab(enemyPrefab, waveNumber);
+            SpawnPrefab(powerupPrefab, 1);
         }
     }
 }

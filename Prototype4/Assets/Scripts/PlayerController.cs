@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     //settings variables
     public float speed = 5.0f;
     private float powerupStrength = 15.0f;
+    public static int powerupAtHitNum;
 
     //object variables
     private Rigidbody playerRb;
@@ -22,11 +23,14 @@ public class PlayerController : MonoBehaviour
     //changing variables
     private float forwardInput;
     public bool hasPowerup;
+    public static int numBumps;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        powerupAtHitNum = 20;
+        numBumps = 0;
         playerRb = GetComponent<Rigidbody>();
         focalPoint = GameObject.FindGameObjectWithTag("FocalPoint");
     }
@@ -36,6 +40,31 @@ public class PlayerController : MonoBehaviour
     {
         forwardInput = Input.GetAxis("Vertical");
         powerupIndicator.transform.position = transform.position + new Vector3(0, -0.6f, 0);
+
+        //Free Powerup Management
+        if(numBumps >= powerupAtHitNum)
+        {
+            hasPowerup = true;
+            numBumps = 0;
+            powerupIndicator.gameObject.SetActive(hasPowerup);
+            StartCoroutine(PowerupCountdownRoutine(3));
+        }
+
+
+        //Loss Condition
+        if (transform.position.y < -40)
+        {
+            GameManager.gameOver = true;
+            playerRb.velocity = new Vector3(0, 0, 0);
+        }
+        if(GameManager.gameOver)
+        {
+            playerRb.velocity = new Vector3(0, 0, 0);
+        }
+        if(GameManager.gameOver && !GameManager.winCondition)
+        {
+            transform.position.Set(transform.position.x, -40, transform.position.z);
+        }
     }
 
     private void FixedUpdate()
@@ -50,13 +79,13 @@ public class PlayerController : MonoBehaviour
             hasPowerup = true;
             powerupIndicator.gameObject.SetActive(hasPowerup);
             Destroy(other.gameObject);
-            StartCoroutine(PowerupCountdownRoutine());
+            StartCoroutine(PowerupCountdownRoutine(7));
         }
     }
 
-    IEnumerator PowerupCountdownRoutine()
+    IEnumerator PowerupCountdownRoutine(int Time)
     {
-        yield return new WaitForSeconds(7);
+        yield return new WaitForSeconds(Time);
         hasPowerup = false;
         powerupIndicator.gameObject.SetActive(hasPowerup);
     }
@@ -75,6 +104,11 @@ public class PlayerController : MonoBehaviour
 
             //add force away from player on enemy
             enemyRigidBody.AddForce(awayFromPlayer * powerupStrength, ForceMode.Impulse);
+        }
+        else if(collision.gameObject.CompareTag("Enemy") && !hasPowerup)
+        {
+            //increase numBumps to put towards free powerup
+            numBumps++;
         }
     }
 }
