@@ -1,4 +1,10 @@
-﻿using System.Collections;
+﻿/* 
+ * Zach Wilson
+ * Assignment 7
+ * This script manages the enemy movement towards the player goal
+*/
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,11 +12,13 @@ public class EnemyX : MonoBehaviour
 {
     public float speed;
     private Rigidbody enemyRb;
-    private GameObject playerGoal;
+    public GameObject playerGoal;
 
     // Start is called before the first frame update
     void Start()
     {
+        speed = SpawnManagerX.enemySpeed;
+        playerGoal = GameObject.FindGameObjectWithTag("PlayerGoal");
         enemyRb = GetComponent<Rigidbody>();
     }
 
