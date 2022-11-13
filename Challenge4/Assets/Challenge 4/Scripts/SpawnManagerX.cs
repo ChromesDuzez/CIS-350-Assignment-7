@@ -17,8 +17,9 @@ public class SpawnManagerX : MonoBehaviour
     private float spawnZMin = 15; // set min spawn Z
     private float spawnZMax = 25; // set max spawn Z
 
+    public static int opposingGoals = 0;
     public int enemyCount;
-    public int waveCount = 1;
+    public static int waveCount = 0;
     public static float enemySpeed;
 
     public GameObject player;
@@ -26,7 +27,14 @@ public class SpawnManagerX : MonoBehaviour
     //called once on start
     void Start()
     {
+        //initialize variables
         enemySpeed = 10.0f;
+        opposingGoals = 0;
+        waveCount = 0;
+
+        //start round
+        waveCount++;
+        SpawnEnemyWave(waveCount);
     }
 
     // Update is called once per frame
@@ -34,11 +42,24 @@ public class SpawnManagerX : MonoBehaviour
     {
         enemyCount = GameObject.FindGameObjectsWithTag("Enemy").Length;
 
-        if (enemyCount == 0)
+        if (enemyCount == 0 && waveCount != opposingGoals)
         {
-            SpawnEnemyWave(waveCount);
+            if(waveCount == 10 && !GameManager.gameOver)
+            {
+                GameManager.winCondition = true;
+                GameManager.gameOver = true;
+            }
+            else if(!GameManager.gameOver)
+            {
+                waveCount++;
+                opposingGoals = 0;
+                SpawnEnemyWave(waveCount);
+            }
         }
-
+        else if (enemyCount == 0 && waveCount <= opposingGoals)
+        {
+            GameManager.gameOver = true;
+        }
     }
 
     // Generate random spawn position for powerups and enemy balls
@@ -66,8 +87,7 @@ public class SpawnManagerX : MonoBehaviour
             Instantiate(enemyPrefab, GenerateSpawnPosition(), enemyPrefab.transform.rotation);
         }
 
-        waveCount++;
-        enemySpeed += 2.0f;
+        enemySpeed += 4.0f;
         ResetPlayerPosition(); // put player back at start
 
     }

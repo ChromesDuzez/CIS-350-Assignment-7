@@ -40,6 +40,7 @@ public class EnemyX : MonoBehaviour
         } 
         else if (other.gameObject.name == "Player Goal")
         {
+            SpawnManagerX.opposingGoals++;
             Destroy(gameObject);
         }
 

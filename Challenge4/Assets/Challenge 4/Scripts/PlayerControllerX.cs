@@ -34,7 +34,7 @@ public class PlayerControllerX : MonoBehaviour
         playerRb.AddForce(focalPoint.transform.forward * verticalInput * speed * Time.deltaTime); 
         
         //tubo boost
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.Space) && !GameManager.StartOfGame)
         {
             playerRb.AddForce(focalPoint.transform.forward * verticalInput * 4, ForceMode.Impulse); 
             focalPoint.GetComponentInChildren<ParticleSystem>().Play();

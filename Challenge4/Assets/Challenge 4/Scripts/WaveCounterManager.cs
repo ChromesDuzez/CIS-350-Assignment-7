@@ -23,7 +23,7 @@ public class WaveCounterManager : MonoBehaviour
     {
         if (!GameManager.gameOver)
         {
-            gameObject.GetComponent<Text>().text = "Wave: " + SpawnManager.waveNumber;
+            gameObject.GetComponent<Text>().text = "Wave: " + SpawnManagerX.waveCount;
         }
     }
 }

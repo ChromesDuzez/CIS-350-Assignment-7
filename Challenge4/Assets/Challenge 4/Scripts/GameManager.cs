@@ -14,9 +14,11 @@ public class GameManager : MonoBehaviour
     //public variables
     public static bool gameOver;
     public static bool winCondition;
+    public static bool StartOfGame;
 
     void Start()
     {
+        StartOfGame = true;
         gameOver = false;
         winCondition = false;
     }
@@ -24,7 +26,7 @@ public class GameManager : MonoBehaviour
     // Update gets called once per frame
     void Update()
     {
-        if(gameOver && Input.GetKeyDown(KeyCode.R))
+        if (gameOver && Input.GetKeyDown(KeyCode.R))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
