@@ -12,11 +12,13 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     //public variables
+    public static bool StartOfGame;
     public static bool gameOver;
     public static bool winCondition;
 
     void Start()
     {
+        StartOfGame = true;
         gameOver = false;
         winCondition = false;
     }
